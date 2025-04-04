@@ -1,2 +1,2 @@
-# INFO-2606-Project
-this is a project for INFO 2606 Group Project
+# INFO-2602-Project
+this is a project for INFO 2602 Group Project
