@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Flask MVC App{% endblock %}
+{% block page %}Flask MVC App{% endblock %}
+
+{{ super() }}
+
+{% block content %}
+    <h1>Flask MVC</h1>
+    {% if is_authenticated %}
+        <p> Welcome {{current_user.username}} </p>
+    {% endif %}
+    <p></p>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <input type="submit" value="Upload CSV">
+    </form>
+    {% for f in current_user.files %}
+        <span>
+            <h5>{{f.name}}</h5>
+            <form action="/download/{{f.id}}" method="GET" enctype="multipart/form-data">
+                <input type="submit" value="Download">
+            </form>
+            <form action="/delete/{{f.id}}" method="POST" enctype="multipart/form-data">
+                <input type="submit" value="Delete">
+            </form>
+            <form action="/generateGraph/{{f.id}}" method="POST" enctype="multipart/form-data">
+                <input type="submit" value="CreateGraph">
+            </form>
+        </span>
+    {% endfor %}
+{% endblock %}
