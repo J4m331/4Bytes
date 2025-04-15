@@ -1,9 +1,11 @@
+import io
+import csv
 import click, pytest, sys
 from flask import Flask
 from flask.cli import with_appcontext, AppGroup
 
 from App.database import db, get_migrate
-from App.models import User
+from App.models import User, File
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize, getAllFiles )
 
@@ -22,6 +24,18 @@ def init():
 @app.cli.command("listFiles", help="Lists all files in the database")
 def listFiles():
     print(getAllFiles())
+
+@app.cli.command("file-data", help="Creates a user")
+def print_file_data():
+    file = File.query.filter_by(id=1).first()
+    csv_file_like = io.StringIO(file.fileData.decode('utf-8'))
+    reader = csv.reader(csv_file_like)
+    for row in reader:
+        print(row)
+
+
+
+
 
 '''
 User Commands
