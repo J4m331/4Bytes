@@ -1,19 +1,21 @@
 from App.database import db
 
-class dataField(db.Model):
+class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    Enrollment = db.Column(db.String(1024))
-    student_demographics = db.Column(db.String(1024))
+    file_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=False)
     gradute = db.Column(db.String(1024))
-    timeSeriesEnrollment = db.Column(db.String(1024))
-    year = db.Column(db.Integer)
+    fauculty = db.Column(db.String(1024))
+    programme = db.Column(db.String(1024))
+    age = db.Column(db.Integer)
     
-    def __init__(self, Enrollment, student_demographics, gradute, timeSeriesEnrollment):
-        self.Enrollment = Enrollment
-        self.student_demographics = student_demographics
+    def __init__(self, file_id, gradute, fauculty, programme, age):
+        self.file_id = file_id
         self.gradute = gradute
-        self.timeSeriesEnrollment = timeSeriesEnrollment
+        self.fauculty = fauculty
+        self.programme = programme
+        self.age = age
+
     def __repr__(self):
-        return f"dataField('{self.Enrollment}', '{self.student_demographics}', '{self.gradute}', '{self.timeSeriesEnrollment}')"
+        return f"data('{self.id}','{self.file_id}', '{self.gradute}', '{self.fauculty}', '{self.programme}', '{self.age}')"
     def __str__(self):
-        return f"dataField('{self.Enrollment}', '{self.student_demographics}', '{self.gradute}', '{self.timeSeriesEnrollment}')"
+        return f"data('{self.id}','{self.file_id}', '{self.gradute}', '{self.fauculty}', '{self.programme}', '{self.age}')"
