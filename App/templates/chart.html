@@ -4,6 +4,20 @@
 
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .chart-buttons {
+        margin: 10px 0;
+    }
+    .chart-buttons .btn {
+        margin: 0 5px;
+    }
+    .chart-buttons .btn.active {
+        background-color: #26a69a;
+    }
+    .chart-buttons .btn:not(.active) {
+        background-color: #a7a7a7;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -11,6 +25,19 @@
     <div class="row">
         <div class="col s12">
             <h4 class="center-align">Programme Distribution</h4>
+            <div class="center-align" style="margin-bottom: 20px;">
+                <select id="dataType" class="browser-default" style="width: 200px; margin: 0 auto 10px auto;">
+                    <option value="programme">Programme Distribution</option>
+                    <option value="age">Age Distribution</option>
+                    <option value="faculty">Faculty Distribution</option>
+                    <option value="graduate">Graduate Distribution</option>
+                </select>
+                <div class="chart-buttons">
+                    <button class="waves-effect waves-light btn active" onclick="changeChartType('pie')">Pie Chart</button>
+                    <button class="waves-effect waves-light btn" onclick="changeChartType('bar')">Bar Chart</button>
+                    <button class="waves-effect waves-light btn" onclick="changeChartType('line')">Line Chart</button>
+                </div>
+            </div>
             <div style="height: 500px;">
                 <canvas id="pieChart"></canvas>
             </div>
@@ -19,25 +46,52 @@
 </div>
 
 <script>
-    // Fetch data and create chart
-    fetch('/generateGraph/{{ file_id }}', {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
+    let currentChart = null;
+    let chartData = null;
+    let chartType = 'pie';
+    let currentDataType = 'programme';
+
+    function changeChartType(type) {
+        chartType = type;
+        createChart(type);
+        updateActiveButton(type);
+    }
+
+    function updateActiveButton(type) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.chart-buttons .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        // Add active class to selected button
+        document.querySelector(`.chart-buttons .btn:nth-child(${
+            type === 'pie' ? 1 : type === 'bar' ? 2 : 3
+        })`).classList.add('active');
+    }
+
+    // Add event listener for select change
+    document.getElementById('dataType').addEventListener('change', function(e) {
+        currentDataType = e.target.value;
+        fetchChartData();
+    });
+
+    function createChart(type) {
         const ctx = document.getElementById('pieChart').getContext('2d');
         
-        new Chart(ctx, {
-            type: 'pie',
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        const config = {
+            type: type,
             data: {
-                labels: data.map(item => item.label),
+                labels: chartData.map(item => item.label),
                 datasets: [{
-                    data: data.map(item => item.value),
-                    backgroundColor: data.map(item => item.color),
-                    borderWidth: 1
+                    data: chartData.map(item => item.value),
+                    backgroundColor: chartData.map(item => item.color),
+                    borderColor: type === 'line' ? '#36A2EB' : undefined,
+                    borderWidth: 1,
+                    fill: type === 'line' ? false : true,
+                    tension: type === 'line' ? 0.4 : undefined
                 }]
             },
             options: {
@@ -46,18 +100,48 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
+                        display: type !== 'line'  // Hide legend for line chart
                     },
                     title: {
                         display: true,
-                        text: 'Programme Distribution'
+                        text: `${currentDataType.charAt(0).toUpperCase() + currentDataType.slice(1)} Distribution`
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: type !== 'pie'  // Only show y-axis for bar and line
+                    },
+                    x: {
+                        display: type !== 'pie'  // Only show x-axis for bar and line
                     }
                 }
             }
+        };
+
+        currentChart = new Chart(ctx, config);
+    }
+
+    function fetchChartData() {
+        fetch(`/generateGraph/${currentDataType}/{{ file_id }}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            chartData = data;
+            createChart(chartType);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            M.toast({html: 'Error loading chart: ' + error.message});
         });
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        M.toast({html: 'Error loading chart: ' + error.message});
-    });
+    }
+
+    // Initial data fetch
+    fetchChartData();
 </script>
 {% endblock %}
