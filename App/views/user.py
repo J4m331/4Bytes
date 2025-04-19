@@ -105,11 +105,8 @@ def generateGraph(file_id):
     if request.method == 'GET':
         return render_template('chart.html', file_id=file_id)
     
-    # Get data from database
+    # Handle POST request for data
     data = getData()
-    print("Raw data from database:", data)  # Debug print
-    
-    # Convert the SQLAlchemy objects to dictionaries
     data_dicts = []
     for d in data:
         data_dicts.append({
@@ -118,14 +115,8 @@ def generateGraph(file_id):
             'gradute': d.gradute,
             'fauculty': d.fauculty
         })
-    print("Converted data:", data_dicts)  # Debug print
     
-    # Create DataFrame and check its content
     df = pd.DataFrame(data_dicts)
-    print("DataFrame info:", df.info())  # Debug print
-    print("Programme counts:", df['programme'].value_counts().to_dict())  # Debug print
-    
-    # Return the final chart data
     chart_data = [
         {
             'id': str(programme),
@@ -135,7 +126,6 @@ def generateGraph(file_id):
         }
         for programme, count in df['programme'].value_counts().items()
     ]
-    print("Final chart data:", chart_data)  # Debug print
     return jsonify(chart_data)
 
 @user_views.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
