@@ -13,6 +13,7 @@ from App.controllers import (
     createFile,
     getFile,
     deleteFile,
+    getData,
     createGraph
 )
 
@@ -94,28 +95,48 @@ def delete(file_id):
     flash('File successfully deleted')
     return render_template('index.html')
 
-@user_views.route('/generateGraph/<file_id>', methods=['POST'])
+@user_views.route('/generateGraph/<file_id>', methods=['GET', 'POST'])
 @jwt_required()
 def generateGraph(file_id):
     userId = get_jwt_identity()
     user = get_user(userId)
-
     file = getFile(file_id)
-    graph = pd.read_csv(BytesIO(file.fileData))
-    mplot.figure()
-    graph.plot()
-    #mplot.show()
-    graphName = f"{file.name}Graph.png"
-    graphDir = os.path.join(current_app.root_path, 'static', 'graphs', graphName)
     
-    os.makedirs(graphDir, exist_ok=True)
+    if request.method == 'GET':
+        return render_template('chart.html', file_id=file_id)
     
-    graphPath = os.path.join(graphDir, graphName)
-    mplot.savefig(graphDir)
-    mplot.close()
-    createGraph(name=graphName, data=graphPath.read(), userId=user.id)
-    flash('Graph created')
-    return render_template('index.html')
+    # Get data from database
+    data = getData()
+    print("Raw data from database:", data)  # Debug print
+    
+    # Convert the SQLAlchemy objects to dictionaries
+    data_dicts = []
+    for d in data:
+        data_dicts.append({
+            'programme': d.programme,
+            'age': d.age,
+            'gradute': d.gradute,
+            'fauculty': d.fauculty
+        })
+    print("Converted data:", data_dicts)  # Debug print
+    
+    # Create DataFrame and check its content
+    df = pd.DataFrame(data_dicts)
+    print("DataFrame info:", df.info())  # Debug print
+    print("Programme counts:", df['programme'].value_counts().to_dict())  # Debug print
+    
+    # Return the final chart data
+    chart_data = [
+        {
+            'id': str(programme),
+            'label': str(programme),
+            'value': int(count),
+            'color': f'hsl({abs(hash(str(programme))) % 360}, 70%, 50%)'
+        }
+        for programme, count in df['programme'].value_counts().items()
+    ]
+    print("Final chart data:", chart_data)  # Debug print
+    return jsonify(chart_data)
 
 @user_views.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def test_route():
