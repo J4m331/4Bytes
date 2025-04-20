@@ -1,0 +1,26 @@
+product_id,product_name,category,price,stock_quantity,rating
+E001,UltraHD Smart TV 55",Television,699.99,45,4.7
+E002,Bluetooth Wireless Headphones,Audio,129.95,78,4.3
+E003,Gaming Laptop Pro,Computers,1299.99,12,4.8
+E004,Smart Home Security Camera,Home Security,89.99,56,4.1
+E005,Wireless Charging Pad,Accessories,34.99,102,3.9
+E006,Digital SLR Camera,Photography,649.50,23,4.6
+E007,Portable Bluetooth Speaker,Audio,79.99,67,4.4
+E008,Fitness Smartwatch,Wearables,159.95,34,4.2
+E009,Wi-Fi Mesh Router System,Networking,199.99,18,4.5
+E010,Tablet Pro 10",Computers,399.95,41,4.0
+E011,Noise-Cancelling Earbuds,Audio,149.99,89,4.7
+E012,Ultra-Slim Desktop PC,Computers,899.99,15,4.3
+E013,Smart Thermostat,Smart Home,129.50,28,4.2
+E014,4K Action Camera,Photography,249.95,32,4.4
+E015,Ergonomic Gaming Mouse,Accessories,59.99,54,4.5
+E016,Curved Gaming Monitor 32",Monitors,349.99,21,4.8
+E017,Portable SSD 1TB,Storage,129.99,47,4.6
+E018,Smart Light Bulb Set,Smart Home,49.95,64,3.8
+E019,Mechanical Gaming Keyboard,Accessories,89.95,38,4.5
+E020,Virtual Reality Headset,Gaming,299.99,19,4.7
+E021,Wi-Fi Security Doorbell,Home Security,149.95,27,4.0
+E022,Streaming Media Player,Entertainment,69.99,53,4.2
+E023,Wireless Earbuds,Audio,119.95,91,4.3
+E024,Smart Kitchen Scale,Smart Home,44.99,36,3.9
+E025,Compact Digital Camera,Photography,199.95,24,4.1

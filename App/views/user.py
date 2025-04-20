@@ -13,7 +13,15 @@ from App.controllers import (
     createFile,
     getFile,
     deleteFile,
-    createGraph
+    getData,
+    createData,
+    getFilebyName,
+    dataByProgramme,
+    dataByAge,
+    dataByFaculty,
+    dataByGraduate,
+    createGraphData,
+    getHeaders
 )
 
 
@@ -75,7 +83,8 @@ def upload():
         user = get_user(userId)
 
         createFile(name=file.filename, data=file.read(), userId=user.id)
-
+        save_file = getFilebyName(file.filename)
+        createData(file_id=save_file.id)
         flash('File successfully uploaded')
         return render_template('index.html')
     return render_template('index.html')
@@ -94,28 +103,22 @@ def delete(file_id):
     flash('File successfully deleted')
     return render_template('index.html')
 
-@user_views.route('/generateGraph/<file_id>', methods=['POST'])
+@user_views.route('/generateGraph/<data_type>/<file_id>', methods=['GET', 'POST'])
 @jwt_required()
-def generateGraph(file_id):
+def generateGraph(file_id, data_type):
     userId = get_jwt_identity()
     user = get_user(userId)
+    headers = getHeaders(file_id)
+    
+    if request.method == 'GET':
+        return render_template('chart.html', file_id=file_id, headers=headers)
+    if data_type:
+        chart_data = createGraphData(file_id, f'{data_type}')
+        return jsonify(chart_data)
+    else:
+        return jsonify({'error': 'Invalid data type'}), 400
 
-    file = getFile(file_id)
-    graph = pd.read_csv(BytesIO(file.fileData))
-    mplot.figure()
-    graph.plot()
-    #mplot.show()
-    graphName = f"{file.name}Graph.png"
-    graphDir = os.path.join(current_app.root_path, 'static', 'graphs', graphName)
-    
-    os.makedirs(graphDir, exist_ok=True)
-    
-    graphPath = os.path.join(graphDir, graphName)
-    mplot.savefig(graphDir)
-    mplot.close()
-    createGraph(name=graphName, data=graphPath.read(), userId=user.id)
-    flash('Graph created')
-    return render_template('index.html')
+
 
 @user_views.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def test_route():
