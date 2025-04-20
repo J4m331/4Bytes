@@ -14,6 +14,12 @@ from App.controllers import (
     getFile,
     deleteFile,
     getData,
+    createData,
+    getFilebyName,
+    dataByProgramme,
+    dataByAge,
+    dataByFaculty,
+    dataByGraduate,
     createGraph
 )
 
@@ -76,7 +82,8 @@ def upload():
         user = get_user(userId)
 
         createFile(name=file.filename, data=file.read(), userId=user.id)
-
+        save_file = getFilebyName(file.filename)
+        createData(file_id=save_file.id)
         flash('File successfully uploaded')
         return render_template('index.html')
     return render_template('index.html')
@@ -105,90 +112,16 @@ def generateGraph(file_id, data_type):
     if request.method == 'GET':
         return render_template('chart.html', file_id=file_id)
     if data_type == 'programme':
-        data = getData()
-        data_dicts = []
-        for d in data:
-            data_dicts.append({
-                'programme': d.programme,
-                'age': d.age,
-                'gradute': d.gradute,
-                'fauculty': d.fauculty
-            })
-        
-        df = pd.DataFrame(data_dicts)
-        chart_data = [
-            {
-                'id': str(programme),
-                'label': str(programme),
-                'value': int(count),
-                'color': f'hsl({abs(hash(str(programme))) % 360}, 70%, 50%)'
-            }
-            for programme, count in df['programme'].value_counts().items()
-        ]
+        chart_data = dataByProgramme(file_id)
         return jsonify(chart_data)
     elif data_type == 'age':
-        data = getData()
-        data_dicts = []
-        for d in data:
-            data_dicts.append({
-                'programme': d.programme,
-                'age': d.age,
-                'gradute': d.gradute,
-                'fauculty': d.fauculty
-            })
-        
-        df = pd.DataFrame(data_dicts)
-        chart_data = [
-            {
-                'id': str(age),
-                'label': str(age),
-                'value': int(count),
-                'color': f'hsl({abs(hash(str(age))) % 360}, 70%, 50%)'
-            }
-            for age, count in df['age'].value_counts().items()
-        ]
+        chart_data = dataByAge(file_id)
         return jsonify(chart_data)
     elif data_type == 'faculty':
-        data = getData()
-        data_dicts = []
-        for d in data:
-            data_dicts.append({
-                'programme': d.programme,
-                'age': d.age,
-                'gradute': d.gradute,
-                'fauculty': d.fauculty
-            })
-        df = pd.DataFrame(data_dicts)
-        chart_data = [
-            {
-                'id': str(fauculty),
-                'label': str(fauculty),
-                'value': int(count),
-                'color': f'hsl({abs(hash(str(fauculty))) % 360}, 70%, 50%)'
-            }
-            for fauculty, count in df['fauculty'].value_counts().items()
-        ]
+        chart_data = dataByFaculty(file_id)
         return jsonify(chart_data)
     elif data_type == 'graduate':
-        data = getData()
-        data_dicts = []
-        for d in data:
-            data_dicts.append({
-                'programme': d.programme,
-                'age': d.age,
-                'gradute': d.gradute,
-                'fauculty': d.fauculty
-            })
-        df = pd.DataFrame(data_dicts)
-        chart_data = [
-            {
-                'id': str(graduate),
-                'label': str(graduate),
-                'value': int(count),
-                'color': f'hsl({abs(hash(str(graduate))) % 360}, 70%, 50%)'
-            }
-            for graduate, count in df['gradute'].value_counts().items()
-        ]
+        chart_data = dataByGraduate(file_id)
         return jsonify(chart_data)
     else:
         return jsonify({'error': 'Invalid data type'}), 400

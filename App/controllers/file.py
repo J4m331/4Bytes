@@ -14,6 +14,10 @@ def getFile(fileId):
 def getAllFiles():
     return File.query.all()
 
+def getFilebyName(name):
+    file = File.query.filter_by(name=name).first()
+    return file
+
 def deleteFile(fileId):
     file = File.query.get(fileId)
     db.session.delete(file)

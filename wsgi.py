@@ -73,17 +73,10 @@ app.cli.add_command(user_cli) # add the group to the cli
 '''
 Data Commands
 '''
-@app.cli.command("create-data", help="Lists all data in the database")
-@click.argument("file_id", default=1)
-def create_data_command(file_id):
-    file = File.query.filter_by(id=file_id).first()
-    csv_file_like = io.StringIO(file.fileData.decode('utf-8'))
-    reader = csv.reader(csv_file_like)
-    for row in reader:
-        data = Data(file_id=file_id, gradute=row[0], fauculty=row[1], programme=row[2], age=row[3])
-        db.session.add(data)
-        db.session.commit()
-        print(f"Data created: {data}")
+@app.cli.command("data", help="Lists all data in the database")
+def create_data_command():
+    data = Data.query.all()
+    print(data)
 
 @app.cli.command("list-data", help="Lists all data in the database")
 def list_data_command():
