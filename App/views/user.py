@@ -70,9 +70,8 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @user_views.route('/', methods=['GET'])
-@jwt_required()
 def home_page():
-    return render_template('index.html', current_user=jwt_current_user)
+    return render_template('index.html')
 
 @user_views.route('/upload', methods=['GET', 'POST'])
 @jwt_required()
@@ -123,3 +122,7 @@ def generateGraph(file_id, data_type):
 @user_views.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def test_route():
     return f"Method: {request.method}"
+
+@user_views.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
