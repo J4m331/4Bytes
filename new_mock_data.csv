@@ -1,31 +1,6 @@
-gradute,fauculty,programme,age
-Postgraduate,FHE,MSc Management Studies,22
-Postgraduate,FFA,MSc Data Science,24
-Postgraduate,FSS,MPhil Creative Arts,25
-Postgraduate,FHE,MSc Data Science,29
-Postgraduate,FFA,BSc Mathematics,27
-Undergraduate,FST,BSc Nursing,27
-Postgraduate,FST,PhD Computer Science,21
-Postgraduate,FSS,MSc Data Science,24
-Postgraduate,FHE,MSc Economics,22
-Postgraduate,FST,MSc Economics,23
-Postgraduate,FHE,MSc Management Studies,21
-Postgraduate,FST,BSc Nursing,25
-Undergraduate,FFA,BSc Nursing,27
-Postgraduate,FST,MSc Management Studies,24
-Undergraduate,FHE,MSc Data Science,24
-Undergraduate,FFA,BSc Computer Science,18
-Undergraduate,FSS,BSc Mathematics,18
-Undergraduate,FHE,BSc Computer Science,24
-Undergraduate,FST,MSc Management Studies,29
-Postgraduate,FFA,MPhil Creative Arts,25
-Undergraduate,FFA,MPhil Creative Arts,23
-Undergraduate,FFA,BSc Nursing,25
-Undergraduate,FHE,BSc Computer Science,21
-Undergraduate,FHE,MSc Management Studies,25
-Postgraduate,FST,PhD Computer Science,24
-Postgraduate,FHE,MSc Management Studies,24
-Undergraduate,FST,BSc Nursing,21
-Undergraduate,FFA,PhD Computer Science,24
-Postgraduate,FSS,BSc Computer Science,20
-Undergraduate,FST,MPhil Creative Arts,19
+a,b,c,d
+TEXTA,Num1,1,9
+TEXTB,Num2,1,8
+TEXTA,Num2,2,9
+TEXTB,Num1,1,8
+TEXTC,Num2,1,8

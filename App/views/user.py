@@ -20,7 +20,8 @@ from App.controllers import (
     dataByAge,
     dataByFaculty,
     dataByGraduate,
-    createGraph
+    createGraphData,
+    getHeaders
 )
 
 
@@ -107,26 +108,17 @@ def delete(file_id):
 def generateGraph(file_id, data_type):
     userId = get_jwt_identity()
     user = get_user(userId)
-    file = getFile(file_id)
+    headers = getHeaders(file_id)
     
     if request.method == 'GET':
-        return render_template('chart.html', file_id=file_id)
-    if data_type == 'programme':
-        chart_data = dataByProgramme(file_id)
-        return jsonify(chart_data)
-    elif data_type == 'age':
-        chart_data = dataByAge(file_id)
-        return jsonify(chart_data)
-    elif data_type == 'faculty':
-        chart_data = dataByFaculty(file_id)
-        return jsonify(chart_data)
-    elif data_type == 'graduate':
-        chart_data = dataByGraduate(file_id)
+        return render_template('chart.html', file_id=file_id, headers=headers)
+    if data_type:
+        chart_data = createGraphData(file_id, f'{data_type}')
         return jsonify(chart_data)
     else:
         return jsonify({'error': 'Invalid data type'}), 400
 
-    
+
 
 @user_views.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def test_route():

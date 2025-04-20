@@ -27,10 +27,9 @@
             <h4 class="center-align">Programme Distribution</h4>
             <div class="center-align" style="margin-bottom: 20px;">
                 <select id="dataType" class="browser-default" style="width: 200px; margin: 0 auto 10px auto;">
-                    <option value="programme">Programme Distribution</option>
-                    <option value="age">Age Distribution</option>
-                    <option value="faculty">Faculty Distribution</option>
-                    <option value="graduate">Graduate Distribution</option>
+                    {% for h in headers %}
+                        <option value={{h}}>{{h.capitalize()}} Distribution</option>
+                    {% endfor %}
                 </select>
                 <div class="chart-buttons">
                     <button class="waves-effect waves-light btn active" onclick="changeChartType('pie')">Pie Chart</button>
