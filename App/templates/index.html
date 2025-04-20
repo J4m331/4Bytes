@@ -1,31 +1,84 @@
 {% extends "layout.html" %}
-{% block title %}Flask MVC App{% endblock %}
-{% block page %}Flask MVC App{% endblock %}
+{% block title %}UWI Stat Platform{% endblock %}
 
 {{ super() }}
 
 {% block content %}
-    <h1>Flask MVC</h1>
-    {% if is_authenticated %}
-        <p> Welcome {{current_user.username}} </p>
-    {% endif %}
-    <p></p>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".csv" required>
-        <input type="submit" value="Upload CSV">
-    </form>
-    {% for f in current_user.files %}
-        <span>
-            <h5>{{f.name}}</h5>
-            <form action="/download/{{f.id}}" method="GET" enctype="multipart/form-data">
-                <input type="submit" value="Download">
-            </form>
-            <form action="/delete/{{f.id}}" method="POST" enctype="multipart/form-data">
-                <input type="submit" value="Delete">
-            </form>
-            <form action="/generateGraph/{{f.id}}" method="POST" enctype="multipart/form-data">
-                <input type="submit" value="CreateGraph">
-            </form>
-        </span>
-    {% endfor %}
+    <div id="about" class="section" style="background-color: #191B32;">
+      <div class="left-align white-text" style = "padding: 50px;">
+        <div class="row">
+        <div class="col s12 m8"">
+        <h1>Welcome to <br><strong>The UWI STAT Platform</strong></h1>
+        <h5>Dashboard</h5>
+        </div>
+        <div class="col s12 m4 hide-on-small-only">
+          <img src="{{ url_for('static', filename='images/Chart.png') }}" alt="UWI Logo" style="width:70%; height: auto;">
+        </div>
+        </div>
+      </div>
+
+      <div class="row" style = "padding-left: 50px;">
+        <div class="col s12 m4">
+          <div class="card purple lighten-3">
+            <div class="card-content">
+              <span class="card-title">About</span>
+              <p>The UWI Stat Platform provides graphical data on various statistical data about UWI</p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m4">
+          <div class="card purple lighten-3">
+            <div class="card-content">
+              <span class="card-title">Viewing Graphs</span>
+              <p>Provide customizations for the chart, headers, and axis labels.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m4">
+          <div class="card purple lighten-3">
+            <div class="card-content">
+              <span class="card-title">Contribute</span>
+              <p>Login/ SignUp to upload files and contribute to the UWI Stat Platform</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- Dashboard Section -->
+  <div id="dashboard" class="section">
+    <div style = "padding: 50px;">
+      <h5 class="center-align">Dashboard</h5>
+
+      <div class="row">
+        <!-- Saved Statistics -->
+        <div class="col s12 m4">
+          <div class="card purple lighten-4">
+            <div class="card-content">
+              <span class="card-title">UWI Statistical Data</span>
+              <p>Click to view</p>
+              <ul>
+                <li><a href="#">Upload 1</a></li>
+                <li><a href="#">Upload 2</a></li>
+                <li><a href="#">Upload 3</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts View -->
+        <div class="col s12 m8">
+          <div class="card white" style="border: 2px solid #6a1b9a;">
+            <div class="card-content">
+              <span class="card-title">Charts View</span>
+              <!-- Add selected chart here -->
+              <canvas id="chartCanvas" width="100%" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}
