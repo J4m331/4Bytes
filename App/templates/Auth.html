@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Login Page{% endblock %}
+
+{% block content %}
+  {% if current_user.is_authenticated %}
+    <script>
+      window.location.href = "{{ url_for('dashboard_views.dashboard_page') }}";
+    </script>
+  {% else %}
+<div>
+  <div class="container" style="max-width: 500px; margin-top: 50px;">
+      <div class="card">
+          <div class="card-content center-align">
+              <h4 class="purple-text">UWI STAT Portal</h4>
+
+              <form method="POST" action="{{ url_for('auth_views.login_action') }}" style="margin-top: 30px;">
+                  <div class="input-field">
+                      <input id="username" name="username" valu="bob" type="text" class="validate" required>
+                      <label for="username">Username/ Email</label>
+                  </div>
+
+                  <div class="input-field">
+                      <input id="password" name="password" value="bobpass" type="password" class="validate" required>
+                      <label for="password">Password</label>
+                  </div>
+
+                  <button class="btn waves-effect waves-light purple" type="submit" style="margin-top: 20px; width: 100%;">
+                      Login
+                  </button>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+  {% endif %}
+{% endblock %}
