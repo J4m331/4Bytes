@@ -53,18 +53,17 @@
         </nav>
         <style>
             nav {
-              position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              z-index: 1000;  /* Ensures the navbar stays on top of other elements */
-              transition: top 0.3s;  /* Smooth transition for hiding and showing */
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000; /* Ensures the navbar stays on top of other elements */
+                transition: top 0.3s; /* Smooth transition for hiding and showing */
             }
 
             body {
-              padding-top: 64px;
+                padding-top: 64px;
             }
-
         </style>
 
         {% block content %}{% endblock %}
@@ -87,7 +86,6 @@
                    {% endfor %}
                {% endif %}
              {% endwith %}
-
 
             let lastScrollTop = 0;
             const navbar = document.getElementById('navbar');
