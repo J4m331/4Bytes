@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Login - UWI Stat Platform{% endblock %}
+{% block title %}Sign Up - UWI Stat Platform{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -7,8 +7,8 @@
         <div class="col s12 m6 offset-m3">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title center-align purple-text">Login</span>
-                    <form method="POST" action="{{ url_for('user_views.login_page') }}">
+                    <span class="card-title center-align purple-text">Sign Up</span>
+                    <form method="POST" action="{{ url_for('user_views.create_user_action') }}">
                         <div class="input-field">
                             <i class="material-icons prefix">person</i>
                             <input id="username" name="username" type="text" class="validate" required>
@@ -21,13 +21,13 @@
                         </div>
                         <div class="center-align" style="margin-top: 20px;">
                             <button class="btn waves-effect waves-light purple" type="submit">
-                                Login
+                                Sign Up
                                 <i class="material-icons right">send</i>
                             </button>
                         </div>
                     </form>
                     <div class="center-align" style="margin-top: 20px;">
-                        <p>Don't have an account? <a href="{{ url_for('user_views.signup_page') }}" class="purple-text">Sign Up</a>
+                        <p>Already have an account? <a href="{{ url_for('user_views.login_page') }}" class="purple-text">Login</a></p>
                     </div>
                 </div>
             </div>

@@ -35,6 +35,10 @@ def get_user_page():
     users = get_all_users()
     return render_template('users.html', users=users)
 
+@user_views.route('/signup', methods=['GET'])
+def signup_page():
+    return render_template('signup.html')
+
 @user_views.route('/users', methods=['POST'])
 def create_user_action():
     data = request.form
@@ -69,16 +73,22 @@ def allowed_file(filename):
 @user_views.route('/', methods=['GET'])
 @jwt_required()
 def home_page():
+    userId = get_jwt_identity()
+    user = get_user(userId)
     files = getAllFiles()
-    return render_template('index.html', files=files)
+    return render_template('index.html', files=files, admin=user.admin)
 
 @user_views.route('/upload', methods=['GET', 'POST'])
 @jwt_required()
 def upload():
+    userId = get_jwt_identity()
+    user = get_user(userId)
+    if not user.admin:
+        flash('Admins only can upload files.')
+        return redirect(url_for('user_views.home_page'))
+    
     if request.method == 'POST':
         file = request.files['file']
-        userId = get_jwt_identity()
-        user = get_user(userId)
 
         createFile(name=file.filename, data=file.read(), userId=user.id)
         save_file = getFilebyName(file.filename)
@@ -89,22 +99,32 @@ def upload():
 
 @user_views.route('/download/<file_id>', methods=['GET'])
 @jwt_required()
-def download(file_id):
+def download(file_id):    
+    userId = get_jwt_identity()
+    user = get_user(userId)
+    if not user.admin:
+        flash('Admins only can delete files.')
+        return redirect(url_for('user_views.home_page'))
+    
     file = getFile(file_id)
     flash('File successfully downloaded')
     return send_file(BytesIO(file.fileData), download_name=file.name, as_attachment=True)
 
-@user_views.route('/delete/<file_id>', methods=['POST'])
+@user_views.route('/delete/<file_id>', methods=['GET','POST'])
 @jwt_required()
 def delete(file_id):
+    userId = get_jwt_identity()
+    user = get_user(userId)
+    if not user.admin:
+        flash('Admins only can delete files.')
+        return redirect(url_for('user_views.home_page'))
+    
     deleteFile(file_id)
     flash('File successfully deleted')
     return render_template('index.html')
 
 @user_views.route('/generateGraph/<data_type>/<file_id>', methods=['GET', 'POST'])
 def generateGraph(file_id, data_type):
-    #userId = get_jwt_identity()
-    #user = get_user(userId)
     headers = getHeaders(file_id)
     
     if request.method == 'GET':

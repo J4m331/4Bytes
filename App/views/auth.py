@@ -25,7 +25,7 @@ def get_user_page():
 @jwt_required()
 def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
-    
+
 
 @auth_views.route('/login', methods=['POST'])
 def login_action():
@@ -37,8 +37,7 @@ def login_action():
         return redirect(url_for('user_views.login_page'))
     else:
         flash('Login Successful')
-        response = render_template('index.html')
-        response = make_response(response)
+        response = redirect(url_for('user_views.home_page'))
         set_access_cookies(response, token) 
     return response
 

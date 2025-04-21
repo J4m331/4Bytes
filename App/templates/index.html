@@ -60,13 +60,34 @@
               <p>Click to view</p>
               <ul>
                 {% for f in files %}
-                  <li><a href="{{ url_for('user_views.generateGraph', data_type='programme', file_id=f.id) }}">{{f.name}}</a></li>
+                  <li>
+                    <a href="{{ url_for('user_views.generateGraph', data_type='f.getFirstHeader(f.id)', file_id=f.id) }}">
+                      <i class="material-icons suffix">
+                        insert_chart
+                      </i>
+                    </a>
+                    {{f.name}}
+                    {% if admin %}
+                    <a href="{{url_for('user_views.download', file_id=f.id)}}">
+                      <i class="material-icons suffix">
+                        download
+                      </i>
+                    </a>
+                    <a href="{{url_for('user_views.delete', file_id=f.id)}}">
+                      <i class="material-icons suffix">
+                        delete
+                      </i>
+                    </a>
+                    {% endif %}
+                  </li>
                 {% endfor%}
               </ul>
+              {% if admin %}
               <form action="/upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="file" accept=".csv" required>
                 <input type="submit" value="Upload CSV">
               </form>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -83,7 +104,7 @@
               <div class="container">
                 <div class="row">
                     <div class="col s12">
-                        <h4 class="center-align">Distribution</h4>
+                        <h4 class="center-align">Distribution of </h4>
                         <div class="center-align" style="margin-bottom: 20px;">
                             <select id="dataType" class="browser-default" style="width: 200px; margin: 0 auto 10px auto;">
                                 {% for h in headers %}
@@ -107,7 +128,12 @@
                 let currentChart = null;
                 let chartData = null;
                 let chartType = 'pie';
-                let currentDataType = 'programme';
+                let currentDataType = '';
+
+                function capitalize(str) {
+                  if (!str) return '';
+                  return str.charAt(0).toUpperCase() + str.slice(1);
+                }
             
                 function changeChartType(type) {
                     chartType = type;
@@ -197,6 +223,7 @@
                         console.error('Error:', error);
                         M.toast({html: 'Error loading chart: ' + error.message});
                     });
+                    document.querySelector('h4.center-align').textContent = `Distribution of ${capitalize(currentDataType)}`;
                 }
             
                 // Initial data fetch
