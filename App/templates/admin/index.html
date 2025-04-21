@@ -93,14 +93,19 @@
         </div>
 
         <!-- Saved Charts -->
+        
         <div class="col s12 m4">
           <div class="card purple lighten-5">
             <div class="card-content">
               <span class="card-title">Saved Uploads</span>
               <ul>
-                <li>Upload 1</li>
-                <li>Upload 2</li>
-                <li>Upload 3</li>
+                {% if files %}
+                  {% for file in files %}
+                    <li>{{file.name}}</li>
+                  {% endfor %}
+                {% else %}
+                  <li>No files uploaded yet</li>
+                {% endif %}
               </ul>
             </div>
           </div>
