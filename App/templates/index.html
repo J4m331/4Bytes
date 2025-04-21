@@ -4,8 +4,15 @@
 {{ super() }}
 
 {% block content %}
-    <div id="about" class="section" style="background-color: #191B32;">
-      <div class="left-align white-text" style = "padding: 50px;">
+    <div id="about" class="section" 
+      style="
+         background-image: url('{{ url_for('static', filename='images/UWI.png') }}');
+         background-size: cover;
+         background-position: center;
+         background-repeat: no-repeat;
+         padding: 10px;
+       ">
+      <div class="left-align white-text" style = "padding: 40px;">
         <div class="row">
         <div class="col s12 m8">
         <h1>Welcome to <br><strong>The UWI STAT Platform</strong></h1>
@@ -17,28 +24,43 @@
         </div>
       </div>
 
-      <div class="row" style = "padding-left: 50px;">
+      <div class="row" style = "padding: 40px; padding-top: 10px;">
         <div class="col s12 m4">
-          <div class="card purple lighten-3">
+          <div class="card deep-purple accent-1">
             <div class="card-content">
+              {% if is_authenticated %}
+              <span class="card-title">Getting Started</span>
+              <p>To get started, upload your file. Accepted file types are; spreadsheets(xlsx, xls) or csv files</p>
+              {% else %}
               <span class="card-title">About</span>
-              <p>The UWI Stat Platform provides graphical data on various statistical data about UWI</p>
+              <p>The UWI Stat Platform provides graphical data on various statistical data on UWI </p>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="col s12 m4">
-          <div class="card purple lighten-3">
+          <div class="card deep-purple accent-1">
             <div class="card-content">
-              <span class="card-title">Viewing Graphs</span>
-              <p>Provide customizations for the chart, headers, and axis labels.</p>
+              {% if is_authenticated %}
+              <span class="card-title">View Charts</span>
+              <p>View your charts once uploaded, or view from saved files. Freely switch between different supported chart types</p>
+              {% else %}
+              <span class="card-title">View Charts</span>
+              <p>View charts from statistics provided and freely switch between supported graph types.</p>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="col s12 m4">
-          <div class="card purple lighten-3">
+          <div class="card deep-purple accent-1">
             <div class="card-content">
+              {% if is_authenticated %}
+              <span class="card-title">Your Dashboard</span>
+              <p>Your Dashboard alows you to publish your uploaded files and contribute to the site or delete as needed. </p>
+              {% else %}
               <span class="card-title">Contribute</span>
-              <p>Login/ SignUp to upload files and contribute to the UWI Stat Platform</p>
+              <p>Login to contribute or upload files to view graphical data</p>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -52,59 +74,90 @@
       <h5 class="center-align">Dashboard</h5>
 
       <div class="row">
-        <!-- Saved Statistics -->
+
+
+        <!-- Left Column -->
         <div class="col s12 m4">
-          <div class="card purple lighten-4">
+          <h5 class="center-align">Dashboard</h5>
+
+          <!-- Upload File -->
+          {% if admin %}
+          <div class="card deep-purple lighten-5 center-align">
+            <div class="card-content">
+              <p>Click to upload files here</p>
+              <form action="/upload" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                <div class="file-field input-field">
+                  <div class="btn-floating purple">
+                    <i class="material-icons">attach_file</i>
+                    <input type="file" name="file" accept=".csv" required>
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Upload CSV file">
+                  </div>
+                </div>
+                <button type="submit" class="btn purple">Upload</button>
+              </form>
+
+            </div>
+          </div>
+          {% endif %}
+
+
+          <!-- UWI Statistical Data -->
+          <div class="card deep-purple lighten-5">
             <div class="card-content">
               <span class="card-title">UWI Statistical Data</span>
               <p>Click to view</p>
-              <ul>
+              <ul class="collection">
+                <!-- Test -->
+                <li class="collection-item">
+                  <div>Test
+                    <a href="#!" class="secondary-content">
+                      <i class="material-icons deep-purple-text">delete</i>
+                      </a>
+                    <a href="#!" class="secondary-content">
+                      <i class="material-icons deep-purple-text">download</i>
+                    </a>
+                  </div>
+                </li> 
+                <!--Test End-->
+
                 {% for f in files %}
-                  <li>
-                    <a href="{{ url_for('user_views.generateGraph', data_type='f.getFirstHeader(f.id)', file_id=f.id) }}">
-                      <i class="material-icons suffix">
-                        insert_chart
-                      </i>
+                  <li class="collection-item">
+                    <!-- Link to generate graph page -->
+                    <a href="{{ url_for('user_views.generateGraph', data_type=f.getFirstHeader(f.id), file_id=f.id) }}">
+                      {{ f.name }}
                     </a>
-                    {{f.name}}
+
+                    <!-- Admin Actions: Download & Delete -->
                     {% if admin %}
-                    <a href="{{url_for('user_views.download', file_id=f.id)}}">
-                      <i class="material-icons suffix">
-                        download
-                      </i>
-                    </a>
-                    <a href="{{url_for('user_views.delete', file_id=f.id)}}">
-                      <i class="material-icons suffix">
-                        delete
-                      </i>
-                    </a>
+                      <a href="{{ url_for('user_views.download', file_id=f.id) }}" class="secondary-content" title="Download">
+                        <i class="material-icons deep-purple-text">download</i>
+                      </a>
+                      <a href="{{ url_for('user_views.delete', file_id=f.id) }}" class="secondary-content" title="Delete">
+                        <i class="material-icons red-text">delete</i>
+                      </a>
                     {% endif %}
                   </li>
-                {% endfor%}
+                {% endfor %}
               </ul>
-              {% if admin %}
-              <form action="/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file" accept=".csv" required>
-                <input type="submit" value="Upload CSV">
-              </form>
-              {% endif %}
             </div>
           </div>
+
+
         </div>
 
         <!-- Charts View -->
         <div class="col s12 m8">
+          <h5 class="center-align">Charts:</h5>
           <div class="card white" style="border: 2px solid #6a1b9a; height: 800px;">
-            <div class="card-content">
-              <span class="card-title">Charts View</span>
-              
+            <div class="card-content">       
 
-              
               <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
               <div class="container">
                 <div class="row">
                     <div class="col s12">
-                        <h4 class="center-align">Distribution of </h4>
+                        <h5 class="center-align">Distribution of </h5>
                         <div class="center-align" style="margin-bottom: 20px;">
                             <select id="dataType" class="browser-default" style="width: 200px; margin: 0 auto 10px auto;">
                                 {% for h in headers %}
@@ -112,9 +165,9 @@
                                 {% endfor %}
                             </select>
                             <div class="chart-buttons">
-                                <button class="waves-effect waves-light btn active" onclick="changeChartType('pie')">Pie Chart</button>
-                                <button class="waves-effect waves-light btn" onclick="changeChartType('bar')">Bar Chart</button>
-                                <button class="waves-effect waves-light btn" onclick="changeChartType('line')">Line Chart</button>
+                                <button class="waves-effect waves-light btn active purple" onclick="changeChartType('pie')">Pie Chart</button>
+                                <button class="waves-effect waves-light btn purple" onclick="changeChartType('bar')">Bar Chart</button>
+                                <button class="waves-effect waves-light btn purple" onclick="changeChartType('line')">Line Chart</button>
                             </div>
                         </div>
                         <div style="height: 500px;">
@@ -123,7 +176,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <script>
                 let currentChart = null;
                 let chartData = null;
@@ -134,13 +187,13 @@
                   if (!str) return '';
                   return str.charAt(0).toUpperCase() + str.slice(1);
                 }
-            
+
                 function changeChartType(type) {
                     chartType = type;
                     createChart(type);
                     updateActiveButton(type);
                 }
-            
+
                 function updateActiveButton(type) {
                     // Remove active class from all buttons
                     document.querySelectorAll('.chart-buttons .btn').forEach(btn => {
@@ -151,20 +204,20 @@
                         type === 'pie' ? 1 : type === 'bar' ? 2 : 3
                     })`).classList.add('active');
                 }
-            
+
                 // Add event listener for select change
                 document.getElementById('dataType').addEventListener('change', function(e) {
                     currentDataType = e.target.value;
                     fetchChartData();
                 });
-            
+
                 function createChart(type) {
                     const ctx = document.getElementById('pieChart').getContext('2d');
-                    
+
                     if (currentChart) {
                         currentChart.destroy();
                     }
-            
+
                     const config = {
                         type: type,
                         data: {
@@ -202,10 +255,10 @@
                             }
                         }
                     };
-            
+
                     currentChart = new Chart(ctx, config);
                 }
-            
+
                 function fetchChartData() {
                     fetch(`/generateGraph/${currentDataType}/{{ file_id }}`, {
                         method: 'POST',
@@ -225,7 +278,7 @@
                     });
                     document.querySelector('h4.center-align').textContent = `Distribution of ${capitalize(currentDataType)}`;
                 }
-            
+
                 // Initial data fetch
                 fetchChartData();
             </script>
