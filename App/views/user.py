@@ -12,14 +12,11 @@ from App.controllers import (
     get_jwt_identity,
     createFile,
     getFile,
+    getAllFiles,
     deleteFile,
     getData,
     createData,
     getFilebyName,
-    dataByProgramme,
-    dataByAge,
-    dataByFaculty,
-    dataByGraduate,
     createGraphData,
     getHeaders
 )
@@ -70,8 +67,10 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @user_views.route('/', methods=['GET'])
+@jwt_required()
 def home_page():
-    return render_template('index.html')
+    files = getAllFiles()
+    return render_template('index.html', files=files)
 
 @user_views.route('/upload', methods=['GET', 'POST'])
 @jwt_required()
@@ -85,7 +84,7 @@ def upload():
         save_file = getFilebyName(file.filename)
         createData(file_id=save_file.id)
         flash('File successfully uploaded')
-        return render_template('index.html')
+        return redirect(url_for('user_views.home_page'))
     return render_template('index.html')
 
 @user_views.route('/download/<file_id>', methods=['GET'])
@@ -103,14 +102,14 @@ def delete(file_id):
     return render_template('index.html')
 
 @user_views.route('/generateGraph/<data_type>/<file_id>', methods=['GET', 'POST'])
-@jwt_required()
 def generateGraph(file_id, data_type):
-    userId = get_jwt_identity()
-    user = get_user(userId)
+    #userId = get_jwt_identity()
+    #user = get_user(userId)
     headers = getHeaders(file_id)
     
     if request.method == 'GET':
-        return render_template('chart.html', file_id=file_id, headers=headers)
+        files = getAllFiles()
+        return render_template('index.html', file_id=file_id, headers=headers, files=files)
     if data_type:
         chart_data = createGraphData(file_id, f'{data_type}')
         return jsonify(chart_data)

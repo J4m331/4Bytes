@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for, make_response
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
 
 
@@ -31,11 +31,14 @@ def identify_page():
 def login_action():
     data = request.form
     token = login(data['username'], data['password'])
-    response = redirect(request.referrer)
+    
     if not token:
         flash('Bad username or password given'), 401
+        return redirect(url_for('user_views.login_page'))
     else:
         flash('Login Successful')
+        response = render_template('index.html')
+        response = make_response(response)
         set_access_cookies(response, token) 
     return response
 

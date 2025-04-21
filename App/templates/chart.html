@@ -24,11 +24,11 @@
 <div class="container">
     <div class="row">
         <div class="col s12">
-            <h4 class="center-align">Programme Distribution</h4>
+            <h4 class="center-align">{{h.capitalize()}} Distribution</h4>
             <div class="center-align" style="margin-bottom: 20px;">
                 <select id="dataType" class="browser-default" style="width: 200px; margin: 0 auto 10px auto;">
                     {% for h in headers %}
-                        <option value={{h}}>{{h.capitalize()}} Distribution</option>
+                        <option value={{h}}>{{h.capitalize()}}</option>
                     {% endfor %}
                 </select>
                 <div class="chart-buttons">
