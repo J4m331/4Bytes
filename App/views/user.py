@@ -71,12 +71,14 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @user_views.route('/', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=True)
 def home_page():
+    user = None
     userId = get_jwt_identity()
-    user = get_user(userId)
+    if userId:
+        user = get_user(userId)
     files = getAllFiles()
-    return render_template('index.html', files=files, admin=user.admin)
+    return render_template('index.html', files=files, admin=user.admin if user else False)
 
 @user_views.route('/upload', methods=['GET', 'POST'])
 @jwt_required()
