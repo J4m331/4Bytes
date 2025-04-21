@@ -2,6 +2,12 @@
 {% block title %}Login - UWI Stat Platform{% endblock %}
 
 {% block content %}
+<div style="background-image: url('{{ url_for('static', filename='images/UWI.png') }}');
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+     padding: 10px;
+     height: 90vh;">
 <div class="container">
     <div class="row" style="margin-top: 50px;">
         <div class="col s12 m6 offset-m3">
@@ -33,5 +39,6 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
