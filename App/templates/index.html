@@ -95,7 +95,7 @@ super() }} {% block content %}
 </div>
 
 <!-- Dashboard Section -->
-<div id="dashboard" class="section" style="background-color: #fafafa;">
+<div id="dashboard" class="section" style="background-color: #fafafa">
   <div style="padding: 50px">
     <h5 class="center-align">Dashboard</h5>
 
@@ -152,13 +152,23 @@ super() }} {% block content %}
               </li>
               <li class="collection-item">
                 <div>
-                  <a href="{{ url_for('user_views.generateGraph', data_type='your_column_name', file_id='data.csv') }}">
+                  <a
+                    href="{{ url_for('user_views.generateGraph', data_type='your_column_name', file_id='data.csv') }}"
+                  >
                     sample_data.csv
                   </a>
-                  <a href="{{ url_for('user_views.download', file_id='test-id') }}" class="secondary-content" title="Download">
+                  <a
+                    href="{{ url_for('user_views.download', file_id='test-id') }}"
+                    class="secondary-content"
+                    title="Download"
+                  >
                     <i class="material-icons deep-purple-text">download</i>
                   </a>
-                  <a href="{{ url_for('user_views.delete', file_id='test-id') }}" class="secondary-content" title="Delete">
+                  <a
+                    href="{{ url_for('user_views.delete', file_id='test-id') }}"
+                    class="secondary-content"
+                    title="Delete"
+                  >
                     <i class="material-icons deep-purple-text">delete</i>
                   </a>
                 </div>

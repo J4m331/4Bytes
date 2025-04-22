@@ -121,17 +121,25 @@ def delete(file_id):
         flash('Admins only can delete files.')
         return redirect(url_for('user_views.home_page'))
     
+    if request.method == 'GET':
+        files = getAllFiles()
     deleteFile(file_id)
     flash('File successfully deleted')
-    return render_template('index.html')
+    return redirect(url_for('user_views.home_page'))
 
 @user_views.route('/generateGraph/<data_type>/<file_id>', methods=['GET', 'POST'])
+@jwt_required(optional=True)
 def generateGraph(file_id, data_type):
+    user = None
+    userId = get_jwt_identity()
+    if userId:
+        user = get_user(userId)
+    
     headers = getHeaders(file_id)
     
     if request.method == 'GET':
         files = getAllFiles()
-        return render_template('index.html', file_id=file_id, headers=headers, files=files)
+        return render_template('index.html', file_id=file_id, headers=headers, files=files, admin=user.admin if user else False)
     if data_type:
         chart_data = createGraphData(file_id, f'{data_type}')
         return jsonify(chart_data)
