@@ -393,30 +393,51 @@ super() }} {% block content %}
                     event.preventDefault(); // Prevent page jump
 
                     // Grab data attributes from the clicked link
-                    const fileId = this.getAttribute("data-file-id");
-                    const dataType = this.getAttribute("data-first-header");
+                    const clickedFileId = this.getAttribute("data-file-id");
+                    const initialDataType =
+                      this.getAttribute("data-first-header");
 
-                    // Set current data type
-                    currentDataType = dataType;
+                    fileId = clickedFileId; // Set global fileId
+                    currentDataType = initialDataType; // Set global data type
 
-                    // Update global fileId used in fetch URL
-                    fetch(`/generateGraph/${currentDataType}/${fileId}`, {
-                      method: "POST",
-                      headers: {
-                        Authorization:
-                          "Bearer " + localStorage.getItem("token"),
-                      },
-                    })
+                    // Fetch and update dropdown headers
+                    fetch(`/api/headers/${fileId}`)
+                      .then((response) => response.json())
+                      .then((headers) => {
+                        const select = document.getElementById("dataType");
+                        select.innerHTML = ""; // Clear previous options
+
+                        headers.forEach((h) => {
+                          const option = document.createElement("option");
+                          option.value = h;
+                          option.textContent =
+                            h.charAt(0).toUpperCase() + h.slice(1);
+                          if (h === currentDataType) option.selected = true;
+                          select.appendChild(option);
+                        });
+
+                        // Now fetch chart data
+                        return fetch(
+                          `/generateGraph/${currentDataType}/${fileId}`,
+                          {
+                            method: "POST",
+                            headers: {
+                              Authorization:
+                                "Bearer " + localStorage.getItem("token"),
+                            },
+                          },
+                        );
+                      })
                       .then((response) => response.json())
                       .then((data) => {
                         chartData = data;
                         createChart(chartType);
-                        // Update dropdown value
-                        document.getElementById("dataType").value = dataType;
+
                         // Update chart title
                         document.querySelector("h4.center-align").textContent =
                           `Distribution of ${capitalize(currentDataType)}`;
-                        // Optionally scroll to chart
+
+                        // Scroll to chart
                         document
                           .getElementById("chartContainer")
                           .scrollIntoView({
@@ -432,6 +453,32 @@ super() }} {% block content %}
                       });
                   });
                 });
+
+              function updateDropdownHeaders(fileId, selectedValue = null) {
+                fetch(`/api/headers/${fileId}`)
+                  .then((response) => response.json())
+                  .then((headers) => {
+                    const select = document.getElementById("dataType");
+                    select.innerHTML = ""; // Clear old options
+
+                    headers.forEach((h) => {
+                      const option = document.createElement("option");
+                      option.value = h;
+                      option.textContent =
+                        h.charAt(0).toUpperCase() + h.slice(1);
+                      if (h === selectedValue) option.selected = true;
+                      select.appendChild(option);
+                    });
+
+                    // After repopulating dropdown, re-fetch chart data
+                    currentDataType = selectedValue || headers[0];
+                    fetchChartData();
+                  })
+                  .catch((error) => {
+                    console.error("Failed to load headers:", error);
+                    M.toast({ html: "Error loading dropdown headers" });
+                  });
+              }
             </script>
 
             <canvas id="chartCanvas" width="100%" height="300"></canvas>

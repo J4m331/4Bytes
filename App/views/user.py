@@ -165,3 +165,9 @@ def test_route():
 @user_views.route('/login', methods=['GET'])
 def login_page():
     return render_template('login.html')
+
+@user_views.route('/api/headers/<file_id>', methods=['GET'])
+def get_headers_api(file_id):
+    headers = getHeaders(file_id)
+    return jsonify(headers)
+
