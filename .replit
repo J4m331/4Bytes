@@ -1,0 +1,14 @@
+modules = ["web", "python-3.12", "nodejs-20", "bash"]
+run = "npm run serve"
+
+[nix]
+channel = "stable-24_05"
+packages = ["cairo", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "libmysqlclient", "pkg-config", "qhull", "tcl", "tk"]
+
+[deployment]
+run = ["sh", "-c", "npm run serve"]
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+exposeLocalhost = true
