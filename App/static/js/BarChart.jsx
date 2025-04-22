@@ -33,7 +33,7 @@ const BarChart = ({ fileId }) => {
     }
 
     return (
-        <div style={{ height: '400px' }}>
+        <div style={{ height: '500px' }}>
             <ResponsiveBar
                 data={data}
                 keys={['count']}

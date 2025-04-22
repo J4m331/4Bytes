@@ -6,12 +6,7 @@ const ChartContainer = ({ fileId }) => {
     const [chartType, setChartType] = useState('pie')
 
     return (
-        <div style={{ 
-            maxWidth: '600px', 
-            margin: '0 auto', 
-            padding: '20px',
-            height: '400px'
-        }}>
+        <div>
             <div style={{ marginBottom: '20px' }}>
                 <button 
                     onClick={() => setChartType('pie')}
@@ -27,13 +22,11 @@ const ChartContainer = ({ fileId }) => {
                     Bar Chart
                 </button>
             </div>
-            <div style={{ height: '300px' }}>
-                {chartType === 'pie' ? (
-                    <PieChart fileId={fileId} />
-                ) : (
-                    <BarChart fileId={fileId} />
-                )}
-            </div>
+            {chartType === 'pie' ? (
+                <PieChart fileId={fileId} />
+            ) : (
+                <BarChart fileId={fileId} />
+            )}
         </div>
     )
 }
