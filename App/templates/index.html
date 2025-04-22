@@ -143,7 +143,7 @@ super() }} {% block content %}
               <!-- Test -->
               <li class="collection-item">
                 <div>
-                  Test
+                  Test-UI(Static)
                   <a href="#!" class="secondary-content">
                     <i class="material-icons deep-purple-text">delete</i>
                   </a>
@@ -152,30 +152,6 @@ super() }} {% block content %}
                   </a>
                 </div>
               </li>
-              <li class="collection-item">
-                <div>
-                  <a
-                    href="{{ url_for('user_views.generateGraph', data_type='your_column_name', file_id='data.csv') }}"
-                  >
-                    sample_data.csv
-                  </a>
-                  <a
-                    href="{{ url_for('user_views.delete', file_id='test-id') }}"
-                    class="secondary-content"
-                    title="Delete"
-                  >
-                    <i class="material-icons deep-purple-text">delete</i>
-                  </a>
-                  <a
-                    href="{{ url_for('user_views.download', file_id='test-id') }}"
-                    class="secondary-content"
-                    title="Download"
-                  >
-                    <i class="material-icons deep-purple-text">download</i>
-                  </a>
-                </div>
-              </li>
-
               <!--Test End-->
 
               {% for f in files %}
