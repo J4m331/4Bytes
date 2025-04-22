@@ -105,6 +105,7 @@ super() }} {% block content %}
         <h5 class="center-align">Dashboard</h5>
 
         <!-- Upload File -->
+        {% if is_authenticated %}
         <div class="card deep-purple lighten-5 center-align">
           <div class="card-content">
             <p>Click to upload files here</p>
@@ -131,6 +132,7 @@ super() }} {% block content %}
             </form>
           </div>
         </div>
+        {% endif %}
 
         <!-- UWI Statistical Data -->
         <div class="card deep-purple lighten-5">
@@ -158,18 +160,18 @@ super() }} {% block content %}
                     sample_data.csv
                   </a>
                   <a
-                    href="{{ url_for('user_views.download', file_id='test-id') }}"
-                    class="secondary-content"
-                    title="Download"
-                  >
-                    <i class="material-icons deep-purple-text">download</i>
-                  </a>
-                  <a
                     href="{{ url_for('user_views.delete', file_id='test-id') }}"
                     class="secondary-content"
                     title="Delete"
                   >
                     <i class="material-icons deep-purple-text">delete</i>
+                  </a>
+                  <a
+                    href="{{ url_for('user_views.download', file_id='test-id') }}"
+                    class="secondary-content"
+                    title="Download"
+                  >
+                    <i class="material-icons deep-purple-text">download</i>
                   </a>
                 </div>
               </li>
@@ -180,7 +182,7 @@ super() }} {% block content %}
               <li class="collection-item">
                 <!-- Link to generate graph page -->
                 <a
-                  href="{{ url_for('user_views.generateGraph', data_type=f.getFirstHeader(f.id), file_id=f.id) }}"
+                  href="{{ url_for('user_views.generateGraph', data_type=f.first_header, file_id=f.id) }}"
                 >
                   {{ f.name }}
                 </a>
