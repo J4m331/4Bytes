@@ -9,6 +9,7 @@ super() }} {% block content %}
          background-position: center;
          background-repeat: no-repeat;
          padding: 10px;
+         height: 90vh;
        "
 >
   <div class="left-align white-text" style="padding: 40px">
@@ -140,49 +141,14 @@ super() }} {% block content %}
             <span class="card-title">UWI Statistical Data</span>
             <p>Click to view</p>
             <ul class="collection">
-              <!-- Test -->
-              <li class="collection-item">
-                <div>
-                  Test
-                  <a href="#!" class="secondary-content">
-                    <i class="material-icons deep-purple-text">delete</i>
-                  </a>
-                  <a href="#!" class="secondary-content">
-                    <i class="material-icons deep-purple-text">download</i>
-                  </a>
-                </div>
-              </li>
-              <li class="collection-item">
-                <div>
-                  <a
-                    href="{{ url_for('user_views.generateGraph', data_type='your_column_name', file_id='data.csv') }}"
-                  >
-                    sample_data.csv
-                  </a>
-                  <a
-                    href="{{ url_for('user_views.delete', file_id='test-id') }}"
-                    class="secondary-content"
-                    title="Delete"
-                  >
-                    <i class="material-icons deep-purple-text">delete</i>
-                  </a>
-                  <a
-                    href="{{ url_for('user_views.download', file_id='test-id') }}"
-                    class="secondary-content"
-                    title="Download"
-                  >
-                    <i class="material-icons deep-purple-text">download</i>
-                  </a>
-                </div>
-              </li>
-
-              <!--Test End-->
-
               {% for f in files %}
               <li class="collection-item">
-                <!-- Link to generate graph page -->
+                <!-- Link to trigger chart generation -->
                 <a
-                  href="{{ url_for('user_views.generateGraph', data_type=f.first_header, file_id=f.id) }}"
+                  href="#"
+                  class="generate-graph-btn"
+                  data-file-id="{{ f.id }}"
+                  data-first-header="{{ f.first_header }}"
                 >
                   {{ f.name }}
                 </a>
@@ -209,6 +175,7 @@ super() }} {% block content %}
             </ul>
           </div>
         </div>
+
         <!-- End of UWI Statistical Data -->
       </div>
 
@@ -232,7 +199,7 @@ super() }} {% block content %}
                       style="width: 200px; margin: 0 auto 10px auto"
                     >
                       {% for h in headers %}
-                      <option value="{{h}}">{{h.capitalize()}}</option>
+                      <option value="{{ h }}">{{ h.capitalize() }}</option>
                       {% endfor %}
                     </select>
                     <div class="chart-buttons">
@@ -269,25 +236,26 @@ super() }} {% block content %}
               let chartType = "pie";
               let currentDataType = "";
 
+              // Function to capitalize the first letter of a string
               function capitalize(str) {
                 if (!str) return "";
                 return str.charAt(0).toUpperCase() + str.slice(1);
               }
 
+              // Function to change the chart type
               function changeChartType(type) {
                 chartType = type;
                 createChart(type);
                 updateActiveButton(type);
               }
 
+              // Function to update active button styling
               function updateActiveButton(type) {
-                // Remove active class from all buttons
                 document
                   .querySelectorAll(".chart-buttons .btn")
                   .forEach((btn) => {
                     btn.classList.remove("active");
                   });
-                // Add active class to selected button
                 document
                   .querySelector(
                     `.chart-buttons .btn:nth-child(${
@@ -297,7 +265,7 @@ super() }} {% block content %}
                   .classList.add("active");
               }
 
-              // Add event listener for select change
+              // Event listener for changing the data type (dropdown)
               document
                 .getElementById("dataType")
                 .addEventListener("change", function (e) {
@@ -305,6 +273,7 @@ super() }} {% block content %}
                   fetchChartData();
                 });
 
+              // Function to create the chart
               function createChart(type) {
                 const ctx = document
                   .getElementById("pieChart")
@@ -339,7 +308,7 @@ super() }} {% block content %}
                       },
                       title: {
                         display: true,
-                        text: `${currentDataType.charAt(0).toUpperCase() + currentDataType.slice(1)} Distribution`,
+                        text: `${capitalize(currentDataType)} Distribution`,
                       },
                     },
                     scales: {
@@ -357,16 +326,26 @@ super() }} {% block content %}
                 currentChart = new Chart(ctx, config);
               }
 
+              var fileId = "{{ file_id }}"; // Pass the file_id from Flask template context to JavaScript
+
+              // Function to fetch the chart data
               function fetchChartData() {
-                fetch(`/generateGraph/${currentDataType}/{{ file_id }}`, {
+                fetch(`/generateGraph/${currentDataType}/${fileId}`, {
                   method: "POST",
                   headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json", // Ensure content type is correctly set
                   },
                 })
-                  .then((response) => response.json())
+                  .then((response) => {
+                    if (!response.ok) {
+                      throw new Error(
+                        `HTTP error: ${response.status} - ${response.statusText}`,
+                      );
+                    }
+                    return response.json();
+                  })
                   .then((data) => {
-                    console.log(data);
+                    console.log(data); // Log the fetched chart data
                     chartData = data;
                     createChart(chartType);
                   })
@@ -374,12 +353,29 @@ super() }} {% block content %}
                     console.error("Error:", error);
                     M.toast({ html: "Error loading chart: " + error.message });
                   });
+
                 document.querySelector("h4.center-align").textContent =
                   `Distribution of ${capitalize(currentDataType)}`;
               }
 
-              // Initial data fetch
+              // Initial data fetch when the page loads
               fetchChartData();
+
+              // Handling link clicks without page reload
+              const links = document.querySelectorAll(".collection-item a");
+              links.forEach((link) => {
+                link.addEventListener("click", function (event) {
+                  event.preventDefault(); // Prevent the default link behavior (page reload)
+
+                  // Get the file ID and the data type from the clicked link's attributes
+                  const fileId = this.getAttribute("data-file-id");
+                  const dataType = this.getAttribute("data-data-type");
+
+                  // Set the current data type and fetch chart data for the clicked file
+                  currentDataType = dataType;
+                  fetchChartData();
+                });
+              });
             </script>
 
             <canvas id="chartCanvas" width="100%" height="300"></canvas>
