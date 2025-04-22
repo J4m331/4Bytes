@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for, send_file, current_app
-from flask_jwt_extended import jwt_required, current_user as jwt_current_user, set_access_cookies,create_access_token,unset_jwt_cookies  # Add this import at the top
+from flask_jwt_extended import jwt_required, current_user as jwt_current_user
 
 from.index import index_views
 
@@ -18,7 +18,6 @@ from App.controllers import (
     createData,
     getFilebyName,
     createGraphData,
-    login_user,
     getHeaders
 )
 
@@ -72,9 +71,14 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @user_views.route('/', methods=['GET'])
+@jwt_required(optional=True)
 def home_page():
+    user = None
+    userId = get_jwt_identity()
+    if userId:
+        user = get_user(userId)
     files = getAllFiles()
-    return render_template('index.html', files=files)
+    return render_template('index.html', files=files, admin=user.admin if user else False)
 
 @user_views.route('/upload', methods=['GET', 'POST'])
 @jwt_required()
@@ -141,36 +145,5 @@ def test_route():
     return f"Method: {request.method}"
 
 @user_views.route('/login', methods=['GET'])
-def show_login_page():
-    return render_template('login.html')
-
-@user_views.route('/login', methods=['POST'])
 def login_page():
-    data = request.form
-    token = login_user(data['username'], data['password'])
-    response = None
-    
-    if token:
-        flash('Logged in successfully.')
-        response = redirect(url_for('user_views.admin_view'))
-        set_access_cookies(response, token)
-    else:
-        flash('Invalid username or password')
-        response = redirect(url_for('user_views.show_login_page'))
-    return response
-
-@user_views.route('/admin',methods=['GET'])
-@jwt_required()
-def admin_view():
-    userId = get_jwt_identity()  # This will now be a string
-    user = get_user(int(userId))  # Convert back to integer for database query
-    files = getAllFiles()
-    return render_template('admin/index.html', current_user=user, files=files)
-
-@user_views.route('/logout', methods=['POST'])
-@jwt_required()
-def logout():
-    response = redirect(url_for('user_views.home_page'))
-    unset_jwt_cookies(response)
-    flash('Successfully logged out')
-    return response
+    return render_template('login.html')

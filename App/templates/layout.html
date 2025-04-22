@@ -1,9 +1,7 @@
 <!doctype html>
 <html>
-<head>
-    {% if current_user %}
-        <meta name="user_id" content="{{ current_user.id }}">
-    {% endif %}
+  <head>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
      <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -17,26 +15,24 @@
   <body>
 
       <nav class="purple">
-    <div class="nav-wrapper">
-        <ul id="nav-mobile" class="left">
-            <li><a href="/">UWI STAT Platform</a></li>
-        </ul>
+            <div class="nav-wrapper">
+                <ul id="nav-mobile" class="left">
+                    <li><a href="/">UWI STAT Platform</a></li>
 
-        <ul id="nav-mobile" class="right">
-            <li><a href="/#about" class="nav-link">About</a></li>
-            <li><a href="{{url_for('user_views.home_page')}}" class="nav-link">Dashboard</a></li>
-            {% if current_user %}
-                <li>
-                    <form action="{{ url_for('user_views.logout') }}" method="POST" style="display: inline;">
-                        <button class="btn-flat white-text" type="submit">Logout</button>
-                    </form>
-                </li>
-            {% else %}
-                <li><a href="{{ url_for('user_views.show_login_page') }}" class="nav-link">Login</a></li>
-            {% endif %}
-        </ul>
-    </div>
-</nav>
+                </ul>
+
+                <ul id="nav-mobile" class="right">
+                    <li><a href="/#about" class="nav-link">About</a></li>
+                      <li><a href="/#dashboard" class="nav-link">Dashboard</a></li>
+                {% if is_authenticated %}
+                    <li><a href="/logout">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('user_views.login_page') }}" class="nav-link">Login</a></li>
+              {% endif %}
+                </ul>
+
+          </div>
+      </nav>
       <style>
           .navbar-form label {
               color: white !important;

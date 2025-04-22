@@ -57,17 +57,37 @@
           <div class="card purple lighten-4">
             <div class="card-content">
               <span class="card-title">UWI Statistical Data</span>
-              <p>Click to view available statistics</p>
+              <p>Click to view</p>
               <ul>
                 {% for f in files %}
                   <li>
-                    <a href="{{ url_for('user_views.generateGraph', data_type='f.getFirstHeader(f.id)', file_id=f.id) }}" class="file-link">
-                      <i class="material-icons suffix">insert_chart</i>
-                      <span>{{f.name}}</span>
+                    <a href="{{ url_for('user_views.generateGraph', data_type='f.getFirstHeader(f.id)', file_id=f.id) }}">
+                      <i class="material-icons suffix">
+                        insert_chart
+                      </i>
                     </a>
+                    {{f.name}}
+                    {% if admin %}
+                    <a href="{{url_for('user_views.download', file_id=f.id)}}">
+                      <i class="material-icons suffix">
+                        download
+                      </i>
+                    </a>
+                    <a href="{{url_for('user_views.delete', file_id=f.id)}}">
+                      <i class="material-icons suffix">
+                        delete
+                      </i>
+                    </a>
+                    {% endif %}
                   </li>
-                {% endfor %}
+                {% endfor%}
               </ul>
+              {% if admin %}
+              <form action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".csv" required>
+                <input type="submit" value="Upload CSV">
+              </form>
+              {% endif %}
             </div>
           </div>
         </div>
