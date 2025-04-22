@@ -9,7 +9,6 @@ super() }} {% block content %}
          background-position: center;
          background-repeat: no-repeat;
          padding: 10px;
-         height: 100vh;
        "
 >
   <div class="left-align white-text" style="padding: 40px">
@@ -183,7 +182,10 @@ super() }} {% block content %}
               <li class="collection-item">
                 <!-- Link to generate graph page -->
                 <a
-                  href="{{ url_for('user_views.generateGraph', data_type=f.first_header, file_id=f.id) }}"
+                  href="#"
+                  class="generate-graph-btn"
+                  data-file-id="{{ f.id }}"
+                  data-first-header="{{ f.first_header }}"
                 >
                   {{ f.name }}
                 </a>
@@ -220,7 +222,7 @@ super() }} {% block content %}
           class="card white"
           style="border: 2px solid #6a1b9a; height: 800px"
         >
-          <div class="card-content">
+          <div class="card-content" id="chartContainer">
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <div class="container">
               <div class="row">
@@ -265,6 +267,7 @@ super() }} {% block content %}
             </div>
 
             <script>
+              let fileId = "{{ file_id }}"; // initial fallback
               let currentChart = null;
               let chartData = null;
               let chartType = "pie";
@@ -359,7 +362,7 @@ super() }} {% block content %}
               }
 
               function fetchChartData() {
-                fetch(`/generateGraph/${currentDataType}/{{ file_id }}`, {
+                fetch(`/generateGraph/${currentDataType}/${fileId}`, {
                   method: "POST",
                   headers: {
                     Authorization: "Bearer " + localStorage.getItem("token"),
@@ -381,6 +384,54 @@ super() }} {% block content %}
 
               // Initial data fetch
               fetchChartData();
+
+              // Dynamic graph generation when clicking a file name
+              document
+                .querySelectorAll(".generate-graph-btn")
+                .forEach((link) => {
+                  link.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent page jump
+
+                    // Grab data attributes from the clicked link
+                    const fileId = this.getAttribute("data-file-id");
+                    const dataType = this.getAttribute("data-first-header");
+
+                    // Set current data type
+                    currentDataType = dataType;
+
+                    // Update global fileId used in fetch URL
+                    fetch(`/generateGraph/${currentDataType}/${fileId}`, {
+                      method: "POST",
+                      headers: {
+                        Authorization:
+                          "Bearer " + localStorage.getItem("token"),
+                      },
+                    })
+                      .then((response) => response.json())
+                      .then((data) => {
+                        chartData = data;
+                        createChart(chartType);
+                        // Update dropdown value
+                        document.getElementById("dataType").value = dataType;
+                        // Update chart title
+                        document.querySelector("h4.center-align").textContent =
+                          `Distribution of ${capitalize(currentDataType)}`;
+                        // Optionally scroll to chart
+                        document
+                          .getElementById("chartContainer")
+                          .scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                          });
+                      })
+                      .catch((error) => {
+                        console.error("Error:", error);
+                        M.toast({
+                          html: "Error loading chart: " + error.message,
+                        });
+                      });
+                  });
+                });
             </script>
 
             <canvas id="chartCanvas" width="100%" height="300"></canvas>
