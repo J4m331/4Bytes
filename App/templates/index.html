@@ -221,7 +221,7 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        M.toast({html: 'Error loading chart: ' + error.message});
+                        //M.toast({html: 'Error loading chart: ' + error.message});
                     });
                     document.querySelector('h4.center-align').textContent = `Distribution of ${capitalize(currentDataType)}`;
                 }
