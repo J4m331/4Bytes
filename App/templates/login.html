@@ -1,33 +1,67 @@
-{% extends "layout.html" %}
-{% block title %}Login - UWI Stat Platform{% endblock %}
-
-{% block content %}
-<div class="container">
-    <div class="row" style="margin-top: 50px;">
-        <div class="col s12 m6 offset-m3">
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-title center-align purple-text">Login</span>
-                    <form method="POST" action="{{ url_for('user_views.login_page') }}">
-                        <div class="input-field">
-                            <i class="material-icons prefix">person</i>
-                            <input id="username" name="username" type="text" class="validate" required>
-                            <label for="username">Username</label>
+{% extends "layout.html" %} {% block title %}Login - UWI Stat Platform{%
+endblock %} {% block content %}
+<div
+    style="background-image: url('{{ url_for('static', filename='images/UWI.png') }}');
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+     padding: 10%;
+     height: 90vh;"
+>
+    <div class="container">
+        <div class="row" style="margin-top: 50px">
+            <div class="col s12 m6 offset-m3">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title center-align purple-text"
+                            >Login</span
+                        >
+                        <form
+                            method="POST"
+                            action="{{ url_for('user_views.login_page') }}"
+                        >
+                            <div class="input-field">
+                                <i class="material-icons prefix">person</i>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    class="validate"
+                                    required
+                                />
+                                <label for="username">Username</label>
+                            </div>
+                            <div class="input-field">
+                                <i class="material-icons prefix">lock</i>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    class="validate"
+                                    required
+                                />
+                                <label for="password">Password</label>
+                            </div>
+                            <div class="center-align" style="margin-top: 20px">
+                                <button
+                                    class="btn waves-effect waves-light purple"
+                                    type="submit"
+                                >
+                                    Login
+                                    <i class="material-icons right">send</i>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="center-align" style="margin-top: 20px">
+                            <p>
+                                Don't have an account?
+                                <a
+                                    href="{{ url_for('user_views.signup_page') }}"
+                                    class="purple-text"
+                                    >Sign Up</a
+                                >
+                            </p>
                         </div>
-                        <div class="input-field">
-                            <i class="material-icons prefix">lock</i>
-                            <input id="password" name="password" type="password" class="validate" required>
-                            <label for="password">Password</label>
-                        </div>
-                        <div class="center-align" style="margin-top: 20px;">
-                            <button class="btn waves-effect waves-light purple" type="submit">
-                                Login
-                                <i class="material-icons right">send</i>
-                            </button>
-                        </div>
-                    </form>
-                    <div class="center-align" style="margin-top: 20px;">
-                        <p>Don't have an account? <a href="{{ url_for('user_views.signup_page') }}" class="purple-text">Sign Up</a>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,7 @@
 from App.database import db
+import io
+import csv
+
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,3 +17,12 @@ class File(db.Model):
         self.fileData = data
         self.userId = userId
 
+    @property
+    def first_header(self):
+        try:
+            stream = io.StringIO(self.fileData.decode('utf-8'))
+            reader = csv.reader(stream)
+            headers = next(reader, [])
+            return headers[0] if headers else None
+        except Exception:
+            return None
