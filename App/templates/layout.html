@@ -20,7 +20,7 @@
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
-        <nav class="purple accent-3">
+        <nav class="purple accent-3" id="navbar">
             <div class="nav-wrapper">
                 <ul id="nav-mobile" class="left">
                     <li>
@@ -52,8 +52,17 @@
             </div>
         </nav>
         <style>
-            .navbar-form label {
-                color: white !important;
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000; /* Ensures the navbar stays on top of other elements */
+                transition: top 0.3s; /* Smooth transition for hiding and showing */
+            }
+
+            body {
+                padding-top: 40px;
             }
         </style>
 
@@ -77,6 +86,24 @@
                    {% endfor %}
                {% endif %}
              {% endwith %}
+
+
+            let lastScrollTop = 0;
+            const navbar = document.getElementById('navbar');
+
+            window.addEventListener('scroll', function () {
+              let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+              if (currentScroll > lastScrollTop) {
+                // Scroll Down
+                navbar.style.top = '-64px';  // Hide the navbar (adjust 64px to your navbar height)
+              } else {
+                // Scroll Up
+                navbar.style.top = '0';  // Show the navbar
+              }
+
+              lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Prevent negative scroll
+            });
         </script>
     </body>
 </html>
