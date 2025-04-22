@@ -9,7 +9,7 @@ super() }} {% block content %}
          background-position: center;
          background-repeat: no-repeat;
          padding: 10px;
-         height: 90vh;
+         height: 100vh;
        "
 >
   <div class="left-align white-text" style="padding: 40px">
@@ -191,18 +191,18 @@ super() }} {% block content %}
                 <!-- Admin Actions: Download & Delete -->
                 {% if admin %}
                 <a
-                  href="{{ url_for('user_views.download', file_id=f.id) }}"
-                  class="secondary-content"
-                  title="Download"
-                >
-                  <i class="material-icons deep-purple-text">download</i>
-                </a>
-                <a
                   href="{{ url_for('user_views.delete', file_id=f.id) }}"
                   class="secondary-content"
                   title="Delete"
                 >
                   <i class="material-icons deep-purple-text">delete</i>
+                </a>
+                <a
+                  href="{{ url_for('user_views.download', file_id=f.id) }}"
+                  class="secondary-content"
+                  title="Download"
+                >
+                  <i class="material-icons deep-purple-text">download</i>
                 </a>
                 {% endif %}
               </li>
@@ -225,7 +225,7 @@ super() }} {% block content %}
             <div class="container">
               <div class="row">
                 <div class="col s12">
-                  <h5 class="center-align">Distribution of</h5>
+                  <h4 class="center-align">Distribution of</h4>
                   <div class="center-align" style="margin-bottom: 20px">
                     <select
                       id="dataType"

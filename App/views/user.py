@@ -135,6 +135,8 @@ def delete(file_id):
 @user_views.route('/generateGraph/<data_type>/<file_id>',
                   methods=['GET', 'POST'])
 def generateGraph(file_id, data_type):
+    # No need for the JWT logic anymore since we're not requiring authorization
+
     # Get the headers for the specific file
     headers = getHeaders(file_id)
 
